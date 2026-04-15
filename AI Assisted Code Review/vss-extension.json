@@ -1,10 +1,10 @@
 {
     "manifestVersion": 1,
-    "id": "ai-assisted-code-review",
-    "version": "1.0.1",
+    "id": "aeries-ai-assisted-code-review",
+    "version": "2.0.0",
     "name": "AI-Assisted Code Review",
-    "publisher": "JithinJojiAnchanattu",
-    "public": true,
+    "publisher": "AeriesSoftware",
+    "public": false,
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
@@ -29,7 +29,9 @@
         "ADO",
         "DevOps",
         "AI Assisted",
-        "AI PR Review"
+        "AI PR Review",
+        "Claude",
+        "Anthropic"
     ],
     "icons": {
         "default": "assets/logo.png"
@@ -40,13 +42,13 @@
     },
     "links": {
         "support": {
-            "uri": "https://github.com/jithinanchanattu/AI-Assisted-Code-Review/issues/new?assignees=&labels=bug&template=bug_report.md&title=",
+            "uri": "https://github.com/jameslancaster/AI-Assisted-Code-Review/issues/new?assignees=&labels=bug&template=bug_report.md&title=",
             "version": "1.0.0"
         }
     },
     "repository": {
         "type": "git",
-        "uri": "https://github.com/jithinanchanattu/AI-Assisted-Code-Review"
+        "uri": "https://github.com/jameslancaster/AI-Assisted-Code-Review"
     },
     "screenshots": [
         {

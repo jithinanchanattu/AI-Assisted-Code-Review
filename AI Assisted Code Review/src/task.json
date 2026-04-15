@@ -5,7 +5,7 @@
     "friendlyName": "AI-Assisted Code Review",
     "description": "Complete Code Review using AI",
     "category": "Utility",
-    "author": "Jithin Joji Anchanattu",
+    "author": "James Lancaster",
     "version": {
         "Major": 1,
         "Minor": 0,
@@ -14,35 +14,40 @@
     "instanceNameFormat": "AI-Assisted Code Review $(message)",
     "inputs": [
         {
+            "name": "ai_provider",
+            "type": "pickList",
+            "label": "AI Provider",
+            "defaultValue": "openai",
+            "required": true,
+            "options": {
+                "openai": "OpenAI",
+                "anthropic": "Anthropic"
+            },
+            "helpMarkDown": "Select the AI provider to use for code reviews. Choose **OpenAI** for OpenAI, Azure OpenAI, or any OpenAI-compatible endpoint. Choose **Anthropic** to use the Anthropic API (Claude models)."
+        },
+        {
             "name": "api_key",
             "type": "string",
-            "label": "Open AI API Key",
+            "label": "AI API Key",
             "defaultValue": "",
             "required": true,
-            "helpMarkDown": "API Key for Open AI API. "
+            "helpMarkDown": "API key for the selected AI provider. For OpenAI use your OpenAI secret key. For Anthropic use your Anthropic API key."
         },
         {
             "name": "ai_model",
-            "type": "pickList",
-            "label": "Open AI API Model",
-            "defaultValue": "gpt-3.5-turbo",
-            "options": {
-                "gpt-4-1106-preview": "gpt-4-1106-preview",
-                "gpt-4-vision-preview": "gpt-4-vision-preview",
-                "gpt-4": "gpt-4",
-                "gpt-4-0314": "gpt-4-0314",
-                "gpt-4-0613": "gpt-4-0613",
-                "gpt-4-32k": "gpt-4-32k",
-                "gpt-4-32k-0314": "gpt-4-32k-0314",
-                "gpt-4-32k-0613": "gpt-4-32k-0613",
-                "gpt-3.5-turbo-1106": "gpt-3.5-turbo-1106",
-                "gpt-3.5-turbo": "gpt-3.5-turbo",
-                "gpt-3.5-turbo-16k": "gpt-3.5-turbo-16k",
-                "gpt-3.5-turbo-0301": "gpt-3.5-turbo-0301",
-                "gpt-3.5-turbo-0613": "gpt-3.5-turbo-0613",
-                "gpt-3.5-turbo-16k-0613": "gpt-3.5-turbo-16k-0613"
-            },
-            "helpMarkDown": "## OpenAI API Model Configuration\n\n### Description\nChoose the Open AI API model for code analysis. The selected model determines the depth and capabilities of the code review performed by Open AI.\n\n### Options\n- **gpt-4-1106-preview:** Preview version of GPT-4 released on June 11, 202x.\n- **gpt-4-vision-preview:** Preview version of GPT-4 with enhanced vision capabilities.\n- **gpt-4:** Latest stable release of GPT-4.\n- **gpt-4-0314:** GPT-4 version released on March 14, 202x.\n- **gpt-4-0613:** GPT-4 version released on June 13, 202x.\n- **gpt-4-32k:** GPT-4 version with a 32k parameter size.\n- **gpt-4-32k-0314:** GPT-4 version with 32k parameters, released on March 14, 202x.\n- **gpt-4-32k-0613:** GPT-4 version with 32k parameters, released on June 13, 202x.\n- **gpt-3.5-turbo-1106:** Preview version of GPT-3.5 Turbo released on November 6, 202x.\n- **gpt-3.5-turbo:** Latest stable release of GPT-3.5 Turbo.\n- **gpt-3.5-turbo-16k:** GPT-3.5 Turbo version with a 16k parameter size.\n- **gpt-3.5-turbo-0301:** GPT-3.5 Turbo version released on March 1, 202x.\n- **gpt-3.5-turbo-0613:** GPT-3.5 Turbo version released on June 13, 202x.\n- **gpt-3.5-turbo-16k-0613:** GPT-3.5 Turbo version with 16k parameters, released on June 13, 202x.\n\n### Default Value\nThe default Open AI API model is set to **gpt-3.5-turbo**.\n\n Choose the model that best suits your code review requirements."
+            "type": "string",
+            "label": "AI Model",
+            "defaultValue": "gpt-4o",
+            "required": true,
+            "helpMarkDown": "The model to use for code reviews. For OpenAI: `gpt-4`, `gpt-3.5-turbo`, etc. For Anthropic: `claude-sonnet-4-6`, `claude-opus-4-6`, `claude-haiku-4-5-20251001`, etc."
+        },
+        {
+            "name": "api_url",
+            "type": "string",
+            "label": "API URL Override",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Override the default API endpoint. Useful for proxies, Azure OpenAI deployments, or other compatible endpoints. Leave blank to use the provider default (`https://api.openai.com/v1` for OpenAI, `https://api.anthropic.com` for Anthropic)."
         },
         {
             "name": "bugs",
@@ -87,7 +92,23 @@
             "label": "Additional Prompts",
             "defaultValue": "",
             "required": false,
-            "helpMarkDown": "Specify additional Open AI prompts as a comma-separated list to enhance the code review process.\n\n- Add multiple prompts separated by commas.\n- These prompts will be used in conjunction with the main code review prompts.\n\n**Example:**\n```plaintext\nFix variable naming, Ensure consistent indentation, Review error handling approach\n```"
+            "helpMarkDown": "Specify additional prompts as a comma-separated list to enhance the code review process.\n\n- Add multiple prompts separated by commas.\n- These prompts will be used in conjunction with the main code review prompts.\n- Ignored if **System Prompt Override** is set.\n\n**Example:**\n```plaintext\nFix variable naming, Ensure consistent indentation, Review error handling approach\n```"
+        },
+        {
+            "name": "system_prompt",
+            "type": "multiLine",
+            "label": "System Prompt Override",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Provide a fully custom system prompt for the AI. If set, this **completely replaces** the built-in prompt — the bugs, performance, best practices, and additional prompts inputs are ignored.\n\nLeave blank to use the built-in dynamic prompt assembled from the options above.\n\n**Example:**\n```plaintext\nYou are a senior engineer reviewing a pull request. Focus only on security vulnerabilities and data validation issues. Respond in markdown with bullet points. If there are no issues, respond with NO_COMMENT only.\n```"
+        },
+        {
+            "name": "max_tokens",
+            "type": "string",
+            "label": "Maximum Tokens",
+            "defaultValue": "8192",
+            "required": false,
+            "helpMarkDown": "Specify the maximum number of tokens allowed for the AI API response. This value ensures the request stays within the model's token limit. Also used to skip files whose diff is too large to review."
         }
     ],
     "execution": {

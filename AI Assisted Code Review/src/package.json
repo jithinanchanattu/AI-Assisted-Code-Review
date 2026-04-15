@@ -15,8 +15,10 @@
     "azure-pipelines-task-lib": "^4.7.0",
     "gpt-tokenizer": "^2.1.2",
     "https-proxy-agent": "^7.0.5",
+    "@anthropic-ai/sdk": "^0.39.0",
     "openai": "^4.20.1",
-    "simple-git": "^3.21.0"
+    "simple-git": "^3.21.0",
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.6",
